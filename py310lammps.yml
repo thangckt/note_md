@@ -7,7 +7,7 @@
 # `llvm` suite, it contains compiler and linker `clang lld lldb llvm-tools`
 # which corresponding to: gcc, gxx, libstdcxx-ng
 
-name: py310gpaw
+name: py310lammps
 channels:
   - conda-forge
   - nodefaults
@@ -23,10 +23,7 @@ dependencies:
   - blas
   - libxc
   - scalapack              # only linux
-  - elpa
-  - libvdwxc
-  - ase
-  - gpaw
+  - lammps
 
 
 
