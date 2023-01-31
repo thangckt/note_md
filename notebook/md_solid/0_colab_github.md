@@ -6,7 +6,13 @@ General use
 - Navigate to `https://colab.research.google.com/`
 - Choose to open file in either `Google Drive`, `Github`, or `upload`
 
+## Install packages
+
+To import a library that's not in Colaboratory by default, you can use `!pip install` or `!apt-get install`.
+
 ## Interaction work
+
+Colab is designed to work with Gihub in either `Public repo` or `Private repo`[](https://colab.research.google.com/github/googlecolab/colabtools/blob/main/notebooks/colab-github-demo.ipynb)
 
 ### Open jupyter file on github in Colab
 
