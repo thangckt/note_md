@@ -2,7 +2,12 @@
 
 [Google Colab](https://colab.research.google.com/) provide free open-source to use with jupyter-notebook
 
+General use
+- Navigate to `https://colab.research.google.com/`
+- Choose to open file in either `Google Drive`, `Github`, or `upload`
+
 ## Interaction work
+
 ### Open jupyter file on github in Colab
 
 Opt 1: open in browser, navigate to `https://colab.research.google.com/github/user/<path_to_jupyter_file>`
