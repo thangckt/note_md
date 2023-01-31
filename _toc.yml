@@ -6,17 +6,12 @@ parts:
     chapters:
     - file: notebook/0_1_dft_intro.ipynb
 
+  - caption: Solid
+    chapters:
+    - file: notebook/md_solid/1_scratch_LJ.ipynb
+    - file: notebook/md_solid/2_Lammps_jupyter.ipynb
+
+
   - caption: Soft Materials
     chapters:
     - file: notebook/1_simple_LJ.ipynb
-
-
-  - caption: Molecules
-    chapters:
-      - file: notebook/setup.md
-      - file: notebook/2_1_mol_define_molecule.ipynb
-      - file: notebook/2_2_mol_simple_properties.ipynb
-      - file: notebook/2_3_mol_simple_properties_single_run.ipynb
-      - file: notebook/2_4_mol_geo_optimization.ipynb
-      - file: notebook/2_5_mol_vibration.ipynb
-
