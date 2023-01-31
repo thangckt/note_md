@@ -12,7 +12,6 @@ parts:
       - file: notebook/md_solid/1_scratch_LJ.ipynb
       - file: notebook/md_solid/2_Lammps_jupyter.ipynb
 
-
   - caption: Soft Materials
     chapters:
     - file: notebook/1_simple_LJ.ipynb
@@ -20,3 +19,9 @@ parts:
   - caption: ML potential
     chapters:
     - file: notebook/ml_pot/1_DeepMD_learn.ipynb
+
+  - caption: Enhanced Sampling
+    chapters:
+    - file: notebook/free_energy/1_free_energy_overview.ipynb
+    - file: notebook/free_energy/2_enhanced_sampling.ipynb
+    - file: notebook/free_energy/3_ml_cv.ipynb
