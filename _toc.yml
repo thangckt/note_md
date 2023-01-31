@@ -8,8 +8,9 @@ parts:
 
   - caption: Solid
     chapters:
-    - file: notebook/md_solid/1_scratch_LJ.ipynb
-    - file: notebook/md_solid/2_Lammps_jupyter.ipynb
+      - file: notebook/md_solid/0_colab_gihub.md
+      - file: notebook/md_solid/1_scratch_LJ.ipynb
+      - file: notebook/md_solid/2_Lammps_jupyter.ipynb
 
 
   - caption: Soft Materials
