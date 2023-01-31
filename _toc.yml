@@ -15,3 +15,7 @@ parts:
   - caption: Soft Materials
     chapters:
     - file: notebook/1_simple_LJ.ipynb
+
+  - caption: ML potential
+    chapters:
+    - file: notebook/ml_pot/1_DeepMD_learn.ipynb
