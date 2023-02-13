@@ -27,3 +27,7 @@ parts:
     - file: notebook/free_energy/3_mlcvs_overview.ipynb
       sections:
       - file: notebook/free_energy/mlcv/1_mlcvs_Deep_LDA_Alanine_dipeptide.ipynb
+
+  - caption: Tips
+    chapters:
+      - file: https://colab.research.google.com/github/pb3lab/ibm3202/blob/master/tutorials/lab07_MDsims.ipynb
