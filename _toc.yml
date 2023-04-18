@@ -32,3 +32,22 @@ parts:
   - caption: Tips
     chapters:
       - file: https://colab.research.google.com/github/pb3lab/ibm3202/blob/master/tutorials/lab07_MDsims.ipynb
+
+  - caption: Data Analysis with Python
+    chapters:
+      - file: notebook/data_analysis_python/README.md
+
+  - caption: Practices
+    chapters:
+      - file: notebook/1_Practices/1_PT_Linear_Regression.ipynb
+      - file: notebook/1_Practices/2_PT_Logistic_Regression.ipynb
+
+
+  - caption: Code snippets
+    chapters:
+      - file: notebook/2_code_tips/README.md
+      - file: notebook/2_code_tips/1_jupyter_notebook.ipynb
+      - file: notebook/2_code_tips/2_Matplotlib.ipynb
+      - file: notebook/2_code_tips/3_Ovito.ipynb
+      - file: notebook/2_code_tips/4_Pandas.ipynb
+      - file: notebook/2_code_tips/5_Regular_Expressions.ipynb
