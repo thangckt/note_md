@@ -6,47 +6,45 @@ parts:
     chapters:
     - file: notebook/0_1_dft_intro.ipynb
 
-  - caption: Solid
+  - caption: MD from scratch
     chapters:
-      - file: notebook/md_solid/0_colab_github.ipynb
-      - file: notebook/md_solid/1_scratch_LJ.ipynb
-      - file: notebook/md_solid/2_Lammps_jupyter.ipynb
-
-  - caption: Soft Materials
-    chapters:
-    - file: notebook/1_simple_LJ.ipynb
-
-  - caption: ML potential
-    chapters:
-    - file: notebook/ml_pot/1_DeepMD_learn.ipynb
+      - file: notebook/1_1_md_from_scratch/1_overview.md
+      - file: notebook/1_1_md_from_scratch/1_scratch_LJ.ipynb
 
   - caption: Enhanced Sampling
     chapters:
-    - file: notebook/md_free_energy/1_free_energy_overview.ipynb
-    - file: notebook/md_free_energy/2_enhanced_sampling.ipynb
-    - file: notebook/md_free_energy/3_mlcvs_overview.ipynb
+    - file: notebook/1_2_md_enhanced_sampling/1_free_energy_overview.ipynb
+    - file: notebook/1_2_md_enhanced_sampling/2_enhanced_sampling.ipynb
+    - file: notebook/1_2_md_enhanced_sampling/3_mlcvs_overview.ipynb
       sections:
-      - file: notebook/md_free_energy/mlcvs/1_2d_model_discriminant.ipynb
-      - file: notebook/md_free_energy/mlcvs/2_Deep_LDA_Alanine_dipeptide.ipynb
+      - file: notebook/1_2_md_enhanced_sampling/mlcvs/1_2d_model_discriminant.ipynb
+      - file: notebook/1_2_md_enhanced_sampling/mlcvs/2_Deep_LDA_Alanine_dipeptide.ipynb
 
-
-
-  - caption: Github and Colab
+  - caption: Simulation techniques
     chapters:
-      - file: https://colab.research.google.com/github/pb3lab/ibm3202/blob/master/tutorials/lab07_MDsims.ipynb
+      - file: notebook/1_3_md_simulation_tech/1_Plumed_tips.ipynb
+      - file: notebook/1_3_md_simulation_tech/2_Lammps_jupyter.ipynb
+
+
+  - caption: ML potentials
+    chapters:
+    - file: notebook/1_4_md_MLpot/1_DeepMD_learn.ipynb
+
 
 
   - caption: Data Analysis with Python
     chapters:
-      - file: notebook/data_analysis_python/README.md
+      - file: notebook/2_data_analysis_python/README.md
 
 
 
   - caption: Code snippets
     chapters:
-      - file: notebook/2_code_tips/README.md
-      - file: notebook/2_code_tips/1_jupyter_notebook.ipynb
-      - file: notebook/2_code_tips/2_Matplotlib.ipynb
-      - file: notebook/2_code_tips/3_Ovito.ipynb
-      - file: notebook/2_code_tips/4_Pandas.ipynb
-      - file: notebook/2_code_tips/5_Regular_Expressions.ipynb
+      - file: notebook/3_code_tips/README.md
+      - file: notebook/3_code_tips/1_jupyter_notebook.ipynb
+      - file: notebook/3_code_tips/2_Matplotlib.ipynb
+      - file: notebook/3_code_tips/3_Ovito.ipynb
+      - file: notebook/3_code_tips/4_Pandas.ipynb
+      - file: notebook/3_code_tips/5_Regular_Expressions.ipynb
+      - file: notebook/3_code_tips/0_colab_github.ipynb
+      - file: https://colab.research.google.com/github/pb3lab/ibm3202/blob/master/tutorials/lab07_MDsims.ipynb
