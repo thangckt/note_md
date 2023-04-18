@@ -22,21 +22,23 @@ parts:
 
   - caption: Enhanced Sampling
     chapters:
-    - file: notebook/free_energy/1_free_energy_overview.ipynb
-    - file: notebook/free_energy/2_enhanced_sampling.ipynb
-    - file: notebook/free_energy/3_mlcvs_overview.ipynb
+    - file: notebook/md_free_energy/1_free_energy_overview.ipynb
+    - file: notebook/md_free_energy/2_enhanced_sampling.ipynb
+    - file: notebook/md_free_energy/3_mlcvs_overview.ipynb
       sections:
-      - file: notebook/free_energy/mlcvs/1_2d_model_discriminant.ipynb
-      - file: notebook/free_energy/mlcvs/2_Deep_LDA_Alanine_dipeptide.ipynb
+      - file: notebook/md_free_energy/mlcvs/1_2d_model_discriminant.ipynb
+      - file: notebook/md_free_energy/mlcvs/2_Deep_LDA_Alanine_dipeptide.ipynb
 
-  - caption: Tips
+
+
+  - caption: Github and Colab
     chapters:
       - file: https://colab.research.google.com/github/pb3lab/ibm3202/blob/master/tutorials/lab07_MDsims.ipynb
+
 
   - caption: Data Analysis with Python
     chapters:
       - file: notebook/data_analysis_python/README.md
-
 
 
 
