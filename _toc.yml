@@ -22,7 +22,10 @@ parts:
 
   - caption: Simulation techniques
     chapters:
-      - file: notebook/1_3_md_techniques/*.ipynb
+      - file: notebook/1_3_md_techniques/1_Plumed_tips.ipynb
+      - file: notebook/1_3_md_techniques/2_Lammps_jupyter.ipynb
+      - file: notebook/1_3_md_techniques/3_code_for_md.ipynb
+      - file: notebook/1_3_md_techniques/4_code_for_enhanced_sampling.ipynb
 
 
   - caption: ML potentials
