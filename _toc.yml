@@ -22,7 +22,7 @@ parts:
 
   - caption: Simulation techniques
     chapters:
-      - file: notebook/1_3_md_techniques/*
+      - file: notebook/1_3_md_techniques/*.ipynb
 
 
   - caption: ML potentials
