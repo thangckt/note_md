@@ -22,8 +22,7 @@ parts:
 
   - caption: Simulation techniques
     chapters:
-      - file: notebook/1_3_md_simulation_tech/1_Plumed_tips.ipynb
-      - file: notebook/1_3_md_simulation_tech/2_Lammps_jupyter.ipynb
+      - file: notebook/1_3_md_simulation_tech/*
 
 
   - caption: ML potentials
