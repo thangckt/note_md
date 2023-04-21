@@ -29,7 +29,7 @@ parts:
       - file: notebook/1_3_md_techniques/ase/0_ase_overview.ipynb
         sections:
         - file: notebook/1_3_md_techniques/ase/1_ase_EAM_minimize.ipynb
-        - file: notebook/1_3_md_techniques/ase/1_ase_EAM_MD_tensile.ipynb
+        - file: notebook/1_3_md_techniques/ase/2_ase_EAM_MD_tensile.ipynb
 
 
   - caption: ML potentials
