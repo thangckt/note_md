@@ -8,9 +8,8 @@ channels:
 dependencies:
   - python=3.11
   - ipykernel
-  - xeus-cling
-  # - lmfit
-  # - jupyterlab
+  - xeus-cling   #  only linux
+
 
 
   ## run: pip install -i requirements.txt
@@ -20,3 +19,4 @@ dependencies:
   - pip
   - pip:
     # - pywin32==305    # 228
+
