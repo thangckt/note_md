@@ -59,4 +59,6 @@ parts:
 
   - caption: C++
     chapters:
-      - file: notebook/4_learnCpp/0_setup_devCpp.md
+      - file: notebook/4_learnCpp/0_setup_devCpp.ipynb
+      - file: notebook/4_learnCpp/1_pointers.ipynb
+      - file: notebook/4_learnCpp/2_OOP.ipynb
