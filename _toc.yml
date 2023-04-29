@@ -61,4 +61,5 @@ parts:
     chapters:
       - file: notebook/4_learnCpp/0_setup_devCpp.ipynb
       - file: notebook/4_learnCpp/1_pointers.ipynb
-      - file: notebook/4_learnCpp/2_OOP.ipynb
+      - file: notebook/4_learnCpp/2_oop1_intro.ipynb
+      - file: notebook/4_learnCpp/3_oop2_constructor.ipynb
