@@ -63,3 +63,6 @@ parts:
       - file: notebook/4_learnCpp/1_pointers.ipynb
       - file: notebook/4_learnCpp/2_oop1_intro.ipynb
       - file: notebook/4_learnCpp/3_oop2_constructor.ipynb
+      - file: notebook/4_learnCpp/4_oop3_inheritance.ipynb
+      - file: notebook/4_learnCpp/5_oop4_polymorphism.ipynb
+      - file: notebook/4_learnCpp/6_oop5_h_cpp_file.ipynb
