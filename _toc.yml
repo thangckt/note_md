@@ -54,3 +54,9 @@ parts:
       - file: notebook/3_code_tips/5_Regular_Expressions.ipynb
       - file: notebook/3_code_tips/0_colab_github.ipynb
       - file: https://colab.research.google.com/github/pb3lab/ibm3202/blob/master/tutorials/lab07_MDsims.ipynb
+
+
+
+  - caption: C++
+    chapters:
+      - file: notebook/4_learnCpp/0_setup_devCpp.md
