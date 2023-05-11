@@ -37,4 +37,6 @@ parts:
     - file: notebook/1_4_md_MLpot/1_DeepMD_learn.ipynb
 
 
-
+  - caption: dislocation
+    chapters:
+    - file: notebook/2_dislocation/0_overview.ipynb
