@@ -40,3 +40,9 @@ parts:
   - caption: dislocation
     chapters:
     - file: notebook/2_dislocation/0_overview.ipynb
+
+  - caption: Polymer
+    chapters:
+    - file: notebook/3_polymer/0_intro_polymer_sim.ipynb
+    - file: notebook/3_polymer/1_allatom_ff.ipynb
+    - file: notebook/3_polymer/2_coarse_grain_ff.ipynb
