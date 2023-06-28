@@ -1,0 +1,1072 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Simple MD from scratch &#8212; Modeling materials with MD</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebook/1_1_md_from_scratch/1_scratch_LJ';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Introduction to Free Energy Calculation" href="../1_2_md_enhanced_sampling/1_free_energy_overview.html" />
+    <link rel="prev" title="w23_MD course" href="1_overview.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../README.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">Modeling materials with MD</p>
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">MD from scratch</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="1_overview.html">w23_MD course</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Simple MD from scratch</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Enhanced Sampling</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../1_2_md_enhanced_sampling/1_free_energy_overview.html">Introduction to Free Energy Calculation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../1_2_md_enhanced_sampling/2_enhanced_sampling.html">Enhanced Sampling Methods</a></li>
+
+
+<li class="toctree-l1 has-children"><a class="reference internal" href="../1_2_md_enhanced_sampling/3_mlcvs_overview.html">mlcvs: ML Collective Variables</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../1_2_md_enhanced_sampling/mlcvs/1_2d_model_discriminant.html">LDA &amp; Deep-LDA - Toy model</a></li>
+
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../1_2_md_enhanced_sampling/mlcvs/2_Deep_LDA_Alanine_dipeptide.html">Deep-LDA - Alanine dipeptide</a></li>
+
+
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation techniques</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../1_3_md_techniques/1_Plumed_tips.html">PLUMED related tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../1_3_md_techniques/2_Lammps_jupyter.html">Work with LAMMPS in jupyter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../1_3_md_techniques/3_code_for_md.html">LAMMPS</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="../1_3_md_techniques/4_code_for_enhanced_sampling.html">Codes for Enhanced Sampling</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../1_3_md_techniques/ase/0_ase_overview.html">ASE Overview</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../1_3_md_techniques/ase/1_ase_EAM_minimize.html">Minimize energy of a system using EAM potential</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_3_md_techniques/ase/2_ase_EAM_MD_tensile.html">Run MD in ASE</a></li>
+
+</ul>
+</li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">ML potentials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../1_4_md_MLpot/1_DeepMD_learn.html">Building Deep Potential Models with DeePMD-Kit</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">dislocation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../2_dislocation/0_overview.html">Computation of dislocation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Polymer</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../3_polymer/0_intro_polymer_sim.html">Polymer simulations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3_polymer/2_coarse_grain_ff.html">Coarse-grained modelling</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Semiconductor</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../4_semiconductor/1_strain_engineering.html">Strain engineering</a></li>
+
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/thangckt/note_md/edit/main/notebook/1_1_md_from_scratch/1_scratch_LJ.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button"
+   title="Suggest edit"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+
+</a>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Simple MD from scratch</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-basic-parameters-of-simulation">Define basic parameters of simulation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-lennard-jones-potential">The Lennard-Jones Potential:</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#typical-values-of-the-cutoff-distance-r-mathrm-cut">Typical values of the cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> :</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#play-around-with-the-parameters-of-the-lj-potential">Play around with the parameters of the LJ potential</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-a-class-containing-the-neccessary-information-of-all-particles">Define a class containing the neccessary information of all particles.</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize">Visualize</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#periodic-boundary-conditions">Periodic boundary conditions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-the-compute-functions">Write the compute functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#potential-energy">Potential Energy:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kinetic-energy">Kinetic Energy:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature">Temperature</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pressure">Pressure:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-a-function-called-compute">Write a function called <em>compute</em>,</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-write-out-the-particle-trajectory-in-the-xyz-format">Optional: Write out the particle trajectory in the xyz-Format.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-calculate-the-radial-distribution-function-rdf">Optional: Calculate the radial distribution function (rdf)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implement-the-velocity-verlet-algorithm">Implement the Velocity-Verlet algorithm</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="simple-md-from-scratch">
+<h1>Simple MD from scratch<a class="headerlink" href="#simple-md-from-scratch" title="Permalink to this heading">#</a></h1>
+<p>adapted from <a class="reference external" href="https://github.com/Markus91Koch/MDLecturesWKMBP2020/blob/main/MDlecture1/MD1-Full.ipynb">this repo</a></p>
+<p><strong>Goal:</strong> write a simple coarse-grained MD Code to simulate a Lennard-Jones (LJ) fluid in the NVE ensemble. This mean we will have</p>
+<ul class="simple">
+<li><p>simple spherical particles that interact with each other via a LJ potential</p></li>
+<li><p>The time evolution of the system, i.e. the movement of these atoms, results from time integrating Newton’s equations of motion by using the <strong>Velocity-Verlet</strong> algorithm</p></li>
+<li><p>NVE means system has constant particle N, constant volume V, constan energy E.</p></li>
+</ul>
+<p>install packages</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">conda</span> <span class="n">env</span> <span class="n">update</span> <span class="o">-</span><span class="n">f</span> <span class="o">../../</span><span class="n">py310lammps</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
+<section id="define-basic-parameters-of-simulation">
+<h2>Define basic parameters of simulation<a class="headerlink" href="#define-basic-parameters-of-simulation" title="Permalink to this heading">#</a></h2>
+<p>Define the basic parameters of the simulation, e.g. number of particles, size of the box, timestep, interaction potential (LJ potential), etc.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">random</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># simulation parameters in LJ units</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">20</span>              <span class="c1"># number of particles</span>
+<span class="n">L</span> <span class="o">=</span> <span class="mf">9.0</span>             <span class="c1"># edge length of a cubic box</span>
+<span class="n">nsteps</span> <span class="o">=</span> <span class="mi">20000</span>      <span class="c1"># number of time steps</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">0.0005</span>         <span class="c1"># timestep</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mf">1.0</span>             <span class="c1"># mass of one particle</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">L</span><span class="o">*</span><span class="n">L</span><span class="o">*</span><span class="n">L</span>           <span class="c1"># box volume</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="n">N</span><span class="o">/</span><span class="n">V</span>       <span class="c1"># density</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-lennard-jones-potential">
+<h3>The Lennard-Jones Potential:<a class="headerlink" href="#the-lennard-jones-potential" title="Permalink to this heading">#</a></h3>
+<div class="amsmath math notranslate nohighlight" id="equation-c535bf09-125a-4e82-b7f4-e03c803e17ca">
+<span class="eqno">(1)<a class="headerlink" href="#equation-c535bf09-125a-4e82-b7f4-e03c803e17ca" title="Permalink to this equation">#</a></span>\[\begin{equation}
+U_\mathrm{LJ}(r) = 4 \epsilon \bigg[ \bigg(\frac{\sigma}{r}\bigg)^{12}  - \bigg(\frac{\sigma}{r}\bigg)^{6} \bigg]
+\end{equation}\]</div>
+<p><span class="math notranslate nohighlight">\(r\)</span> - distance between particle centers <br>
+<span class="math notranslate nohighlight">\(\epsilon\)</span> - interaction strength (potential depth) <br>
+<span class="math notranslate nohighlight">\(\sigma\)</span> - particle “size” (root of the potential)<br>
+<br></p>
+<p>In simulations the LJ potential (and its negative first derivate, i.e. the force) is truncated (or cut off) at a certain distance <span class="math notranslate nohighlight">\(r\)</span>. The reasoning behind this is that the potential is nearly at zero for large enough values of <span class="math notranslate nohighlight">\(r\)</span>, anyway. When particles further apart than the cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> are ignored in the force calculation, a lot of simulation time is saved, while the particle interactions remain realistic.
+<br>
+<br></p>
+<p>The <strong>typical cutoff distance of the LJ potential in coarse-grained MD is <span class="math notranslate nohighlight">\(r_\mathrm{cut} = 2.5\)</span>.</strong> In this case the particles have repulsive interactions at very short distances and attractive interactions at intermediate distances. The potential is not only truncated but also shifted along the y-axis: This is neccessary to have zero energy (and zero force) exactly at the cutoff distance: <span class="math notranslate nohighlight">\(U_\mathrm{LJ}(r_\mathrm{cut}) \stackrel{!}{=} 0\)</span> and <span class="math notranslate nohighlight">\(F(r_\mathrm{cut}) \stackrel{!}{=} 0\)</span>. Any nonzero values <span class="math notranslate nohighlight">\(U_\mathrm{LJ}(r_\mathrm{cut}), F(r_\mathrm{cut}) \neq 0\)</span> would be a sudden “jump” in the energy (or force) and hence an unphysical artefact.
+<br>
+<br></p>
+<p>The <strong>shifted, truncated LJ-Potential</strong> is obtained by subtracting the function value at the cutoff:</p>
+<div class="amsmath math notranslate nohighlight" id="equation-209544fb-4dcc-45f3-b812-febc8a44ddae">
+<span class="eqno">(2)<a class="headerlink" href="#equation-209544fb-4dcc-45f3-b812-febc8a44ddae" title="Permalink to this equation">#</a></span>\[\begin{equation} 
+U_\mathrm{LJ, cut}(r) = U_\mathrm{LJ}(r) - U_\mathrm{LJ}(r_\mathrm{cut}) 
+\end{equation}\]</div>
+<section id="typical-values-of-the-cutoff-distance-r-mathrm-cut">
+<h4>Typical values of the cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> :<a class="headerlink" href="#typical-values-of-the-cutoff-distance-r-mathrm-cut" title="Permalink to this heading">#</a></h4>
+<p><span class="math notranslate nohighlight">\(r_\mathrm{cut,\,short} = \min(U_\mathrm{LJ}(r)) = \sqrt[6]{2} \approx 1.12246\)</span> - “short” cutoff, no attractive part <br>
+<span class="math notranslate nohighlight">\(r_\mathrm{cut,\, long} = 2.5\)</span> - long cutoff, with attractive part <br></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Parameters of the LJ potential</span>
+<span class="n">rcut</span> <span class="o">=</span>  <span class="mf">2.5</span> <span class="c1">#1.12246</span>
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="k">def</span> <span class="nf">U</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Lennard-Jones pot. (12-6) to calculate potential energy &quot;&quot;&quot;</span>
+    <span class="n">sx</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">/</span><span class="n">x</span>
+    <span class="n">sx3</span> <span class="o">=</span> <span class="n">sx</span><span class="o">*</span><span class="n">sx</span><span class="o">*</span><span class="n">sx</span>
+    <span class="n">sx6</span> <span class="o">=</span> <span class="n">sx3</span><span class="o">*</span><span class="n">sx3</span>
+    <span class="n">sx12</span> <span class="o">=</span>  <span class="n">sx6</span><span class="o">*</span><span class="n">sx6</span>
+    <span class="n">sc</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">/</span><span class="n">rcut</span>
+    <span class="n">sc3</span> <span class="o">=</span> <span class="n">sc</span><span class="o">*</span><span class="n">sc</span><span class="o">*</span><span class="n">sc</span>
+    <span class="n">sc6</span> <span class="o">=</span> <span class="n">sc3</span><span class="o">*</span><span class="n">sc3</span>
+    <span class="n">sc12</span> <span class="o">=</span>  <span class="n">sc6</span><span class="o">*</span><span class="n">sc6</span>    
+    <span class="n">f</span> <span class="o">=</span> <span class="mf">4.</span><span class="o">*</span><span class="n">epsilon</span><span class="o">*</span><span class="p">(</span><span class="n">sx12</span> <span class="o">-</span> <span class="n">sx6</span><span class="p">)</span> <span class="o">-</span> <span class="mf">4.</span><span class="o">*</span><span class="n">epsilon</span><span class="o">*</span><span class="p">(</span><span class="n">sc12</span> <span class="o">-</span> <span class="n">sc6</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span>
+
+<span class="k">def</span> <span class="nf">DU</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; spatial derivative of the LJ pot. to calculate forces &quot;&quot;&quot;</span>
+    <span class="n">sx</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">/</span><span class="n">x</span>
+    <span class="n">sx3</span> <span class="o">=</span> <span class="n">sx</span><span class="o">*</span><span class="n">sx</span><span class="o">*</span><span class="n">sx</span>
+    <span class="n">sx6</span> <span class="o">=</span> <span class="n">sx3</span><span class="o">*</span><span class="n">sx3</span>
+    <span class="n">sx12</span> <span class="o">=</span>  <span class="n">sx6</span><span class="o">*</span><span class="n">sx6</span>
+    <span class="n">sc</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">/</span><span class="n">rcut</span>
+    <span class="n">sc3</span> <span class="o">=</span> <span class="n">sc</span><span class="o">*</span><span class="n">sc</span><span class="o">*</span><span class="n">sc</span>
+    <span class="n">sc6</span> <span class="o">=</span> <span class="n">sc3</span><span class="o">*</span><span class="n">sc3</span>
+    <span class="n">sc12</span> <span class="o">=</span>  <span class="n">sc6</span><span class="o">*</span><span class="n">sc6</span>       
+    <span class="n">df</span> <span class="o">=</span> <span class="o">-</span><span class="mf">24.</span><span class="o">/</span><span class="n">x</span><span class="o">*</span><span class="n">epsilon</span><span class="o">*</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">sx12</span> <span class="o">-</span> <span class="n">sx6</span><span class="p">)</span>  <span class="o">+</span> <span class="mf">24.</span><span class="o">/</span><span class="n">rcut</span><span class="o">*</span><span class="n">epsilon</span><span class="o">*</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">sc12</span> <span class="o">-</span> <span class="n">sc6</span><span class="p">)</span> 
+    <span class="k">return</span> <span class="n">df</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="play-around-with-the-parameters-of-the-lj-potential">
+<h3>Play around with the parameters of the LJ potential<a class="headerlink" href="#play-around-with-the-parameters-of-the-lj-potential" title="Permalink to this heading">#</a></h3>
+<p>Play around with the parameters of the LJ potential (<span class="math notranslate nohighlight">\(\epsilon\)</span>, <span class="math notranslate nohighlight">\(\sigma\)</span>, <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span>) and plot a few different cases.</p>
+<p><em>Where is the minimum of the LJ potential? Which value of <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> leads to a LJ potential without any attractive part?</em></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot of the Lennard-Jones potential</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="n">step</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">U</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$U_</span><span class="si">{LJ}</span><span class="s1">(r)$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mf">6.</span><span class="p">)</span><span class="o">*</span><span class="n">sigma</span><span class="p">],[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">U</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">U</span><span class="p">(</span><span class="n">x</span><span class="p">))],</span> <span class="s1">&#39;g--&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;min($U_</span><span class="si">{LJ}</span><span class="s2">(r)$)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mf">6.</span><span class="p">)</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mf">6.</span><span class="p">)</span><span class="o">*</span><span class="n">sigma</span><span class="p">],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">U</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span><span class="mi">5</span><span class="p">],</span> <span class="s2">&quot;g--&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">rcut</span><span class="p">,</span><span class="n">rcut</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s1">&#39;c:&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Potential-Cutoff $r_</span><span class="si">{cut}</span><span class="s2">$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">rcut</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;c:&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="o">-</span><span class="n">DU</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s1">&#39;xkcd:bright purple&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$F=-\nabla U_</span><span class="si">{LJ}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mf">3.</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.5</span><span class="o">*</span><span class="n">epsilon</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$r$ [LJ units]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$U_</span><span class="si">{LJ}</span><span class="s1">$ [LJ units]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/25889440af0c80cf70be51a30a5e083003b4cc81df35e46ec9693919fa633486.png" src="../../_images/25889440af0c80cf70be51a30a5e083003b4cc81df35e46ec9693919fa633486.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="define-a-class-containing-the-neccessary-information-of-all-particles">
+<h2>Define a class containing the neccessary information of all particles.<a class="headerlink" href="#define-a-class-containing-the-neccessary-information-of-all-particles" title="Permalink to this heading">#</a></h2>
+<p>The class should contain <strong>particle indices, spatial coordinates, velocities, accelerations and forces.</strong> It should also</p>
+<ol class="arabic simple">
+<li><p>initialize the arrays holding the particles and</p></li>
+<li><p>have a function to distribute the particle in the box (e.g. on a grid) and to assign starting velocities (e.g. randomly distributes velocities). At the least, the particle positions should not overlap.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Atom</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Class Atom represents and manipulates atom types, coordinates etc. &quot;&quot;&quot;</span>
+        
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N_</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="c1"># initialization method, like a constructur in C++</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">initializeMD</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># put atoms on a lattice and assign velocity</span>
+        <span class="n">gridstep</span> <span class="o">=</span> <span class="mf">2.6</span> <span class="c1">#1.0</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="mi">0</span>        
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">):</span>
+            <span class="c1"># put atoms on a simple grid, nothing special</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="n">idx</span><span class="p">,:]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="o">+</span><span class="n">x</span><span class="o">*</span><span class="n">gridstep</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">+</span><span class="n">y</span><span class="o">*</span><span class="n">gridstep</span><span class="p">,</span> <span class="mf">0.1</span><span class="o">+</span><span class="n">z</span><span class="o">*</span><span class="n">gridstep</span><span class="p">]</span>
+            <span class="n">x</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">L</span><span class="o">/</span><span class="n">gridstep</span><span class="p">):</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">y</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">L</span><span class="o">/</span><span class="n">gridstep</span><span class="p">):</span>
+                <span class="n">y</span><span class="o">=</span><span class="mi">0</span>
+                <span class="n">z</span><span class="o">+=</span><span class="mi">1</span><span class="p">;</span>   
+            
+        <span class="c1"># set random velocities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="mf">3.5</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">))</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="visualize">
+<h3>Visualize<a class="headerlink" href="#visualize" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="n">cm</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+
+<span class="c1"># new Atom class instance</span>
+<span class="n">Cheese</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">Cheese</span><span class="o">.</span><span class="n">initializeMD</span><span class="p">()</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">Axes3D</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+
+<span class="c1"># draw box </span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="n">L</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">L</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="n">L</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">L</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">],</span><span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+
+<span class="c1"># define color gradient</span>
+<span class="n">col</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">jet</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
+
+<span class="c1"># draw circles at particle posiitons</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">Cheese</span><span class="o">.</span><span class="n">r</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">Cheese</span><span class="o">.</span><span class="n">r</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">Cheese</span><span class="o">.</span><span class="n">r</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">)</span>
+   
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Figure size 640x480 with 0 Axes&gt;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="periodic-boundary-conditions">
+<h2>Periodic boundary conditions<a class="headerlink" href="#periodic-boundary-conditions" title="Permalink to this heading">#</a></h2>
+<p>Our LJ fluid is supposed to be inside a box with periodic boundary conditions (PBC). In MD simulations this means taking into account <strong>two principles</strong>.</p>
+<ul class="simple">
+<li><p>Periodic Boundary Conditions “per se” - Particles that leave the box on one side (dimension) need to reenter the same box on the other side.
+<a class="reference internal" href="https://raw.githubusercontent.com/Markus91Koch/MDLecturesWKMBP2020/e3af51dc817fe42e017c45a1839f465de3addb83/MDlecture1/img/pbc.jpg"><img alt="https://raw.githubusercontent.com/Markus91Koch/MDLecturesWKMBP2020/e3af51dc817fe42e017c45a1839f465de3addb83/MDlecture1/img/pbc.jpg" src="https://raw.githubusercontent.com/Markus91Koch/MDLecturesWKMBP2020/e3af51dc817fe42e017c45a1839f465de3addb83/MDlecture1/img/pbc.jpg" style="width: 500px;" /></a></p></li>
+<li><p>Minimum Image Convention - Particle distances (and hence, forces) need to be evaluated between the nearest (!) images of these particles.
+<a class="reference internal" href="https://raw.githubusercontent.com/Markus91Koch/MDLecturesWKMBP2020/e3af51dc817fe42e017c45a1839f465de3addb83/MDlecture1/img/mic.jpg"><img alt="https://raw.githubusercontent.com/Markus91Koch/MDLecturesWKMBP2020/e3af51dc817fe42e017c45a1839f465de3addb83/MDlecture1/img/mic.jpg" src="https://raw.githubusercontent.com/Markus91Koch/MDLecturesWKMBP2020/e3af51dc817fe42e017c45a1839f465de3addb83/MDlecture1/img/mic.jpg" style="width: 500px;" /></a></p></li>
+</ul>
+</section>
+<section id="write-the-compute-functions">
+<h2>Write the compute functions<a class="headerlink" href="#write-the-compute-functions" title="Permalink to this heading">#</a></h2>
+<p>Write the functions which calculate positions, velocities, accelerations and forces at a new timestep. We will later call them in the main loop to implement the Velocity-Verlet algorithm.</p>
+<ol class="arabic simple">
+<li><p>At first, let us write the three functions update_pos, update_vel and update_acc according to the Velocity-Verlet algorithm. Keep in mind the periodic boundary conditions for update_pos</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_pos</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Updates particle positions and enforces PBC &quot;&quot;&quot;</span>
+    
+    <span class="n">r</span> <span class="o">+=</span> <span class="n">v</span><span class="o">*</span><span class="n">dt</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">a</span>
+    
+    <span class="c1"># Enforce periodic boundary conditions</span>
+    <span class="n">r</span><span class="p">[</span><span class="n">r</span> <span class="o">&gt;=</span> <span class="n">L</span><span class="p">]</span> <span class="o">-=</span> <span class="n">L</span>
+    <span class="n">r</span><span class="p">[</span><span class="n">r</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">L</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+<span class="k">def</span> <span class="nf">update_vel</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">f</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Updates particle velocities &quot;&quot;&quot;</span>
+    <span class="n">v</span> <span class="o">+=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">f</span><span class="o">/</span><span class="n">m</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">v</span>
+
+<span class="k">def</span> <span class="nf">update_acc</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">f</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Updates particle accelerations &quot;&quot;&quot;</span>
+    <span class="n">a</span>  <span class="o">=</span> <span class="n">f</span><span class="o">/</span><span class="n">m</span>
+    <span class="k">return</span> <span class="n">a</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Next, we will write the function update_force. Here, the forces between all pairs of particles are calculated. This part typically consumes the most CPU time. (Optional: It is practical to also calculate potential energy and the virial for the pressure calculation at this point.)</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calc_distances</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">cutoff_</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Calculate distances of all pairs within the cutoff radius.&quot;&quot;&quot;</span>
+    
+    <span class="c1"># to consider all atom pairs we generate a vector of all pair indices</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">)])</span>
+    
+    <span class="c1"># calculate distances between all pairs</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">dr</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">-</span>  <span class="n">r</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span>
+    
+    <span class="c1"># enforce minimum image convention!</span>
+    <span class="n">dr</span><span class="p">[</span><span class="n">dr</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">L</span><span class="p">]</span> <span class="o">-=</span> <span class="n">L</span>
+    <span class="n">dr</span><span class="p">[</span><span class="n">dr</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">L</span><span class="p">]</span> <span class="o">+=</span> <span class="n">L</span>
+    
+    <span class="c1"># get absolute distances of all pairs</span>
+    <span class="n">dr_abs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">dr</span> <span class="o">*</span> <span class="n">dr</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    
+    <span class="c1"># only pairs within the cutoff will interact, ignore all other pairs</span>
+    <span class="n">pairs_inside</span> <span class="o">=</span> <span class="n">dr_abs</span> <span class="o">&lt;</span> <span class="n">cutoff_</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">pairs_inside</span><span class="p">,:]</span> 
+    <span class="n">dr</span> <span class="o">=</span> <span class="n">dr</span><span class="p">[</span><span class="n">pairs_inside</span><span class="p">,:]</span>
+    <span class="n">dr_abs</span> <span class="o">=</span> <span class="n">dr_abs</span><span class="p">[</span><span class="n">pairs_inside</span><span class="p">]</span>    
+    
+    <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="n">dr_abs</span>
+
+<span class="k">def</span> <span class="nf">update_force</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">f</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Calculates forces between pairs of particles, as well as potential energy and pressure.&quot;&quot;&quot;</span>
+    
+    <span class="k">global</span> <span class="n">virial</span>
+    <span class="n">virial</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># reset forces to zero</span>
+    <span class="n">f</span><span class="p">[:,:]</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="c1"># get pair indices, (vector) pair separations, and absolute pair distances </span>
+    <span class="c1"># only for pairs inside the cutoff</span>
+    <span class="n">pairs</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="n">dr_abs</span> <span class="o">=</span> <span class="n">calc_distances</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rcut</span><span class="p">)</span>
+
+    <span class="c1"># Force = - dU / dr (negative Derivative of Potential)</span>
+    <span class="c1"># First, we calculate the magnitudes of the forces</span>
+    <span class="n">f_abs</span> <span class="o">=</span> <span class="n">DU</span><span class="p">(</span><span class="n">dr_abs</span><span class="p">)</span>
+    
+    <span class="c1"># apply the forces on the atoms</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">idx</span>  <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>      
+        
+        <span class="c1"># force-vector = force-magnitude * unit distance vector between pair</span>
+        <span class="n">force</span> <span class="o">=</span> <span class="n">f_abs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">dr</span><span class="p">[</span><span class="n">k</span><span class="p">,:]</span><span class="o">/</span><span class="n">dr_abs</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        
+        <span class="c1">#Newton&#39;s 3rd law: actio = reactio</span>
+        <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span> <span class="o">-=</span> <span class="n">force</span>
+        <span class="n">f</span><span class="p">[</span><span class="n">j</span><span class="p">,:]</span> <span class="o">+=</span> <span class="n">force</span>
+        <span class="n">virial</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">force</span><span class="p">,</span><span class="n">dr</span><span class="p">[</span><span class="n">k</span><span class="p">,:])</span>
+        
+    <span class="k">return</span> <span class="n">f</span> 
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s think about how potential energy, kinetic energy, temperature etc. are calculated in MD simulations.</p>
+<section id="potential-energy">
+<h3>Potential Energy:<a class="headerlink" href="#potential-energy" title="Permalink to this heading">#</a></h3>
+<p>The potential energy is the sum of the all particle interactions due to the interaction potential (and possible contributions from external potentials),</p>
+<div class="amsmath math notranslate nohighlight" id="equation-29336188-ad1b-419d-b927-819174717b76">
+<span class="eqno">(3)<a class="headerlink" href="#equation-29336188-ad1b-419d-b927-819174717b76" title="Permalink to this equation">#</a></span>\[\begin{equation} 
+E_\mathrm{pot} = \sum_{i&lt;j} U_\mathrm{LJ}\left(r_{ij}\right) 
+\end{equation}\]</div>
+</section>
+<section id="kinetic-energy">
+<h3>Kinetic Energy:<a class="headerlink" href="#kinetic-energy" title="Permalink to this heading">#</a></h3>
+<p>The system’s kinetic energy is the sum of the kinetic energies of all particles,</p>
+<div class="amsmath math notranslate nohighlight" id="equation-f5f9c3e1-c479-4282-b33e-6c19f359b6b2">
+<span class="eqno">(4)<a class="headerlink" href="#equation-f5f9c3e1-c479-4282-b33e-6c19f359b6b2" title="Permalink to this equation">#</a></span>\[\begin{equation} 
+E_\mathrm{kin} = \sum_i^N \frac{m_i v_i^2}{2} 
+\end{equation}\]</div>
+</section>
+<section id="temperature">
+<h3>Temperature<a class="headerlink" href="#temperature" title="Permalink to this heading">#</a></h3>
+<p>Temperature is evaluated based on the <strong>equipartition theorem</strong>: <span class="math notranslate nohighlight">\( \langle E_\mathrm{kin} \rangle = \frac{3}{2} N k_\mathrm{B} T. \)</span> (Here, in LJ units, <span class="math notranslate nohighlight">\(k_\mathrm{B} = 1\)</span>). It follows</p>
+<div class="amsmath math notranslate nohighlight" id="equation-ce310177-fa87-4a67-8328-06dc3df39e10">
+<span class="eqno">(5)<a class="headerlink" href="#equation-ce310177-fa87-4a67-8328-06dc3df39e10" title="Permalink to this equation">#</a></span>\[\begin{equation} 
+T =  \frac{2}{3N} \langle E_\mathrm{kin} \rangle 
+\end{equation}\]</div>
+</section>
+<section id="pressure">
+<h3>Pressure:<a class="headerlink" href="#pressure" title="Permalink to this heading">#</a></h3>
+<p>Pressure in MD simulations can be forumlated in the form of the so-called <strong>virial equation</strong> (see e.g. Hansen &amp; McDonald “Theory of Simple Liquids”, Chapter 2.2 for more details where this is coming from).</p>
+<div class="amsmath math notranslate nohighlight" id="equation-2774fce4-c7e1-4c77-97ea-aa0b1b347087">
+<span class="eqno">(6)<a class="headerlink" href="#equation-2774fce4-c7e1-4c77-97ea-aa0b1b347087" title="Permalink to this equation">#</a></span>\[\begin{equation} 
+P =  \frac{N k_\mathrm{B} T}{V}  + \frac{1}{3V}  \langle \sum_{i&lt;j} \vec{F_{ij}} \cdot \vec{r_{ij}} \rangle 
+\end{equation}\]</div>
+</section>
+</section>
+<section id="write-a-function-called-compute">
+<h2>Write a function called <em>compute</em>,<a class="headerlink" href="#write-a-function-called-compute" title="Permalink to this heading">#</a></h2>
+<p>Write a function called <em>compute</em>, that calculates thermodynamic observables from atomistic information at certain time steps and prints them to the screen.</p>
+<p><em>The function compute is meant to calculate and output information like <strong>temperature, kinetic energy, potential energy, total energy, pressure and average particle velocity.</strong> This function will only to be called at specific times, e.g. every 100 time steps, and not at every step like the time integration.</em></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Calculates and displays thermodynamic observables (scalars)&quot;&quot;&quot;</span>
+    
+    <span class="c1"># Get absolute pair distances</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">dr_abs</span> <span class="o">=</span> <span class="n">calc_distances</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rcut</span><span class="p">)</span>
+    
+    <span class="c1"># Potential energy </span>
+    <span class="n">Epot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">U</span><span class="p">(</span><span class="n">dr_abs</span><span class="p">))</span>
+    
+    <span class="c1"># Squared and Absolute velocities (array)</span>
+    <span class="n">vsq</span> <span class="o">=</span> <span class="p">((</span><span class="n">v</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">vabs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">vsq</span><span class="p">)</span>
+    
+    <span class="c1"># Average velocity of particles</span>
+    <span class="n">meanvel</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">vabs</span><span class="p">)</span>
+    
+    <span class="c1"># Kinetic Energy</span>
+    <span class="n">Ekin</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">m</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">vsq</span><span class="p">)</span>
+    
+    <span class="c1"># Temperature</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">Ekin</span><span class="o">/</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="mf">3.0</span><span class="p">)</span>
+    
+    <span class="c1"># pressure = N*k_b*T/V + virial/(dimensions*V)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="n">T</span><span class="o">/</span><span class="n">V</span> <span class="o">+</span> <span class="n">virial</span><span class="o">/</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">V</span><span class="p">)</span>
+    
+    <span class="c1"># output thermodynam. info</span>
+    <span class="k">if</span> <span class="n">step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Step</span><span class="se">\t</span><span class="s2">Temp</span><span class="se">\t</span><span class="s2">Epot</span><span class="se">\t</span><span class="s2">Ekin</span><span class="se">\t</span><span class="s2">Etot</span><span class="se">\t</span><span class="s2">MeanVel</span><span class="se">\t</span><span class="s2">Press&quot;</span><span class="o">.</span><span class="n">expandtabs</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%6d</span><span class="se">\t</span><span class="si">%3.4f</span><span class="se">\t</span><span class="si">%3.4f</span><span class="se">\t</span><span class="si">%3.4f</span><span class="se">\t</span><span class="si">%3.4f</span><span class="se">\t</span><span class="si">%3.4f</span><span class="se">\t</span><span class="si">%3.4f</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">expandtabs</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">Epot</span><span class="p">,</span> <span class="n">Ekin</span><span class="p">,</span> <span class="n">Ekin</span><span class="o">+</span><span class="n">Epot</span><span class="p">,</span>  <span class="n">meanvel</span><span class="p">,</span> <span class="n">P</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="optional-write-out-the-particle-trajectory-in-the-xyz-format">
+<h2>Optional: Write out the particle trajectory in the xyz-Format.<a class="headerlink" href="#optional-write-out-the-particle-trajectory-in-the-xyz-format" title="Permalink to this heading">#</a></h2>
+<p>The resulting file can be watched like a film in programs like VMD, etc.)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">movie</span><span class="p">(</span><span class="n">switch</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Write film in XYZ format and save to file. &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">file</span>
+    
+    <span class="c1"># open file in the beginning</span>
+    <span class="k">if</span> <span class="n">switch</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;film.xyz&quot;</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+
+    <span class="c1"># write out coordinates of current snapshot</span>
+    <span class="k">elif</span> <span class="n">switch</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">N</span><span class="p">))</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;atom x y z</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;H </span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\t</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">atom</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">atom</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">atom</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+    <span class="c1"># close the file in the end</span>
+    <span class="k">elif</span> <span class="n">switch</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="optional-calculate-the-radial-distribution-function-rdf">
+<h2>Optional: Calculate the radial distribution function (rdf)<a class="headerlink" href="#optional-calculate-the-radial-distribution-function-rdf" title="Permalink to this heading">#</a></h2>
+<p>Calculate the radial distribution function (rdf), also known as pair correlation function g® of the system</p>
+<p>The rdf describes the probability to find a particle at a distance r from a reference particle at zero. In principle, the rdf is a histogram over the particle distance. The bins of the histogram are shere shells around the reference particle in the center (at r=0). The histogram is normalized by “comparing” the system to an ideal gas with equivalent density as a reference system. At large distances r the rdf typically goes towards 1.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rdf</span><span class="p">(</span><span class="n">switch</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Calculate, plot and save radial distribution function g(r) &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">rdf_count</span>
+    <span class="k">global</span> <span class="n">g</span>
+    <span class="k">global</span> <span class="n">gbins</span><span class="p">,</span> <span class="n">gbin_id</span><span class="p">,</span> <span class="n">gbin_center</span><span class="p">,</span> <span class="n">binsz</span>
+
+    <span class="c1"># initialize values, vectors</span>
+    <span class="k">if</span> <span class="n">switch</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        
+        <span class="n">binsz</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># bin size</span>
+        <span class="n">gbins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">L</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="n">binsz</span><span class="p">)</span> <span class="c1"># max. number of bins</span>
+        <span class="n">gbin_id</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">gbins</span><span class="p">)</span> <span class="c1"># bin indices</span>
+        <span class="n">gbin_center</span> <span class="o">=</span> <span class="n">binsz</span><span class="o">*</span><span class="p">(</span><span class="n">gbin_id</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span> <span class="c1"># bin centers in distance units</span>
+        
+        <span class="n">rdf_count</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># number of measurements</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">gbins</span><span class="p">)</span> <span class="c1"># the function g(r)</span>
+
+    <span class="c1"># calculate rdf histogram (counts)     </span>
+    <span class="k">elif</span> <span class="n">switch</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        
+        <span class="n">g_local</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">gbins</span><span class="p">)</span>
+        
+        <span class="c1"># get pair indices and distance of all pairs</span>
+        <span class="n">pairs</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">dr_abs</span> <span class="o">=</span> <span class="n">calc_distances</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">L</span><span class="o">*</span><span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="c1"># binning the data = generate the histogram</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dr_abs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">/</span><span class="n">binsz</span><span class="p">)</span> 
+            <span class="n">g_local</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span>
+            
+        <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">g_local</span><span class="p">)</span>
+        <span class="n">rdf_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># normalize histogram, plot and save to a file</span>
+    <span class="k">elif</span> <span class="n">switch</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        
+        <span class="c1"># normalize the bins</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">gbins</span><span class="p">):</span>
+            <span class="c1"># volume of the jth shell</span>
+            <span class="n">v_shell</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="p">(</span><span class="mf">4.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span><span class="o">*</span><span class="p">((</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">j</span><span class="o">*</span><span class="n">j</span><span class="o">*</span><span class="n">j</span><span class="p">)</span><span class="o">*</span><span class="n">binsz</span><span class="o">*</span><span class="n">binsz</span><span class="o">*</span><span class="n">binsz</span>
+            <span class="n">g</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">/=</span> <span class="n">rdf_count</span><span class="o">*</span><span class="n">v_shell</span><span class="o">*</span><span class="n">N</span><span class="o">*</span><span class="n">rho</span> 
+
+        <span class="c1"># plot and save to a file</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gbin_center</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;rdf.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+        <span class="c1"># save values to a file</span>
+        <span class="n">rdfdata</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gbin_id</span><span class="p">,</span> <span class="n">gbin_center</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s1">&#39;rdf.txt&#39;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">rdfdata</span><span class="p">),</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s1">&#39;bin-nr bin-center(r) g(r)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Next comes the main time loop of the program. Here, the MD code is performing its job, i.e.</p>
+<ul class="simple">
+<li><p>an instance of the Atom class is created</p></li>
+<li><p>initial setup is created and then the time integration is performed interatively using the Velocity-Verlet algorithm.</p></li>
+<li><p>Additionally, some thermodynamic output is generated and further functionalities can be evoked as well.</p></li>
+</ul>
+</section>
+<section id="implement-the-velocity-verlet-algorithm">
+<h2>Implement the Velocity-Verlet algorithm<a class="headerlink" href="#implement-the-velocity-verlet-algorithm" title="Permalink to this heading">#</a></h2>
+<p>Implement the Velocity-Verlet algorithm in the main loop and print thermodynamic information to the screen regularly, e.g. every 100 steps.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>
+
+<span class="c1"># main loop of the program</span>
+<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsteps</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    
+    <span class="c1"># Initialize System at time zero</span>
+    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">Peter</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">Peter</span><span class="o">.</span><span class="n">initializeMD</span><span class="p">()</span>
+        <span class="n">movie</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">rdf</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># at all other times: time integration via Velocity-Verlet</span>
+        <span class="n">Peter</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">update_pos</span><span class="p">(</span><span class="n">Peter</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+      
+    <span class="n">Peter</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">update_force</span><span class="p">(</span><span class="n">Peter</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">Peter</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">update_vel</span><span class="p">(</span><span class="n">Peter</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">Peter</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">update_acc</span><span class="p">(</span><span class="n">Peter</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="c1"># regular calculation &amp; output of thermodynamic info</span>
+    <span class="k">if</span> <span class="n">j</span><span class="o">%</span><span class="mi">1000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">compute</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+        
+    <span class="c1"># write out a frame of a movie regularly</span>
+    <span class="k">if</span> <span class="n">j</span><span class="o">%</span><span class="mi">50</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">movie</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+    
+    <span class="c1"># generate rdf from separate snapshots</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">j</span><span class="o">%</span><span class="mi">200</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">):</span>
+        <span class="n">rdf</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Step    Temp      Epot      Ekin      Etot      MeanVel   Press
+     0     0.9468   0.0000   28.4034   28.4034   1.6298   0.0260
+  1000     0.9917   -1.7066   29.7521   28.0455   1.6677   0.0244
+  2000     1.0332   -3.0688   30.9961   27.9273   1.6745   0.0349
+  3000     1.0654   -4.0780   31.9634   27.8854   1.6883   0.0366
+  4000     1.0636   -3.9841   31.9067   27.9226   1.6854   0.0372
+  5000     1.0417   -3.2372   31.2520   28.0148   1.6828   0.0338
+  6000     1.0592   -3.8039   31.7773   27.9735   1.6673   0.0340
+  7000     1.0356   -3.0222   31.0687   28.0465   1.6558   0.0351
+  8000     1.0078   -2.0766   30.2333   28.1567   1.6264   0.0296
+  9000     0.9943   -1.6420   29.8293   28.1873   1.6216   0.0296
+ 10000     1.0142   -2.2529   30.4255   28.1726   1.6325   0.0311
+ 11000     1.0293   -2.8027   30.8776   28.0749   1.6646   0.0269
+ 12000     0.9704   -1.0542   29.1105   28.0563   1.6114   0.0127
+ 13000     1.0402   -3.1834   31.2059   28.0225   1.6763   0.0266
+ 14000     1.0961   -4.9705   32.8826   27.9121   1.6819   0.0287
+ 15000     1.0447   -3.2795   31.3424   28.0629   1.6461   0.0326
+ 16000     0.9982   -1.8420   29.9459   28.1039   1.6101   0.0316
+ 17000     1.0525   -3.5567   31.5742   28.0175   1.6517   0.0335
+ 18000     1.0251   -2.7503   30.7536   28.0033   1.6361   0.0340
+ 19000     1.0585   -3.8471   31.7540   27.9069   1.6311   0.0291
+ 20000     1.1474   -6.6591   34.4227   27.7636   1.7483   0.0388
+CPU times: user 4.09 s, sys: 5.49 ms, total: 4.1 s
+Wall time: 4.09 s
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># after the simulation generate plots or write, save and close files</span>
+<span class="n">movie</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+<span class="n">rdf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">Peter</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/75c7af92a62de8f6fcda45b23ba26bccfcc16476b79a79c8905a32a17ea20e9a.png" src="../../_images/75c7af92a62de8f6fcda45b23ba26bccfcc16476b79a79c8905a32a17ea20e9a.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebook/1_1_md_from_scratch"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="1_overview.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">w23_MD course</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../1_2_md_enhanced_sampling/1_free_energy_overview.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Introduction to Free Energy Calculation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-basic-parameters-of-simulation">Define basic parameters of simulation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-lennard-jones-potential">The Lennard-Jones Potential:</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#typical-values-of-the-cutoff-distance-r-mathrm-cut">Typical values of the cutoff distance <span class="math notranslate nohighlight">\(r_\mathrm{cut}\)</span> :</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#play-around-with-the-parameters-of-the-lj-potential">Play around with the parameters of the LJ potential</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-a-class-containing-the-neccessary-information-of-all-particles">Define a class containing the neccessary information of all particles.</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize">Visualize</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#periodic-boundary-conditions">Periodic boundary conditions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-the-compute-functions">Write the compute functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#potential-energy">Potential Energy:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kinetic-energy">Kinetic Energy:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature">Temperature</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pressure">Pressure:</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-a-function-called-compute">Write a function called <em>compute</em>,</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-write-out-the-particle-trajectory-in-the-xyz-format">Optional: Write out the particle trajectory in the xyz-Format.</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-calculate-the-radial-distribution-function-rdf">Optional: Calculate the radial distribution function (rdf)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implement-the-velocity-verlet-algorithm">Implement the Velocity-Verlet algorithm</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By thangckt
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
